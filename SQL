@@ -1,0 +1,140 @@
+CREATE DATABASE travel;
+USE travel;
+
+-- 1. Create Customers Table
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(15)
+);
+
+-- 2. Create Packages Table
+CREATE TABLE packages (
+    package_id INT PRIMARY KEY AUTO_INCREMENT,
+    destination VARCHAR(100),
+    price DECIMAL(10, 2),
+    duration_days INT
+);
+
+-- 3. Create Seasons Table
+CREATE TABLE seasons (
+    season_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50)
+);
+
+-- 4. Create Bookings Table
+CREATE TABLE bookings (
+    booking_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
+    package_id INT,
+    season_id INT,
+    booking_date DATE,
+    travel_start_date DATE,
+    num_people INT,
+    status VARCHAR(20) DEFAULT 'Confirmed',  -- Includes 'Cancelled'
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (package_id) REFERENCES packages(package_id),
+    FOREIGN KEY (season_id) REFERENCES seasons(season_id)
+);
+
+-- 5. Create Feedback Table
+CREATE TABLE feedback (
+    feedback_id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT,
+    rating INT,  -- 1 to 5
+    comment TEXT,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
+);
+
+-- ---------------------
+-- INSERT DATA
+-- ---------------------
+
+-- Customers (Indian names)
+INSERT INTO customers (name, email, phone) VALUES
+('Rahul', 'rahul@example.com', '9876543210'),
+('Priya', 'priya@example.com', '9123456780'),
+('Amit', 'amit@example.com', '9988776655'),
+('Neha', 'neha@example.com', '9345612789'),
+('Vikram', 'vikram@example.com', '9001122334'),
+('Anjali', 'anjali@example.com', '9112233445'),
+('Karan', 'karan@example.com', '9877654321'),
+('Sneha', 'sneha@example.com', '9321456789'),
+('Rohit', 'rohit@example.com', '9888123456'),
+('Meera', 'meera@example.com', '9234567890'),
+('Divya', 'divya@example.com', '9876000011'),
+('Arjun', 'arjun@example.com', '9876000012'),
+('Isha', 'isha@example.com', '9876000013'),
+('Ravi', 'ravi@example.com', '9876000014'),
+('Pooja', 'pooja@example.com', '9876000015'),
+('Nikhil', 'nikhil@example.com', '9876000016'),
+('Tanya', 'tanya@example.com', '9876000017'),
+('Sameer', 'sameer@example.com', '9876000018'),
+('Kriti', 'kriti@example.com', '9876000019'),
+('Sahil', 'sahil@example.com', '9876000020');
+
+
+
+-- Packages (Indian destinations)
+INSERT INTO packages (destination, price, duration_days) VALUES
+('Goa', 15000.00, 5),
+('Manali', 18000.00, 6),
+('Jaipur', 12000.00, 4),
+('Kerala', 20000.00, 7), 
+('Leh', 25000.00, 8);
+
+-- Seasons
+INSERT INTO seasons (name) VALUES
+('Summer'),
+('Winter'),
+('Monsoon'),
+('Spring'),
+('Autumn');
+
+-- Bookings (confirmed + cancelled with different destination counts)
+INSERT INTO bookings (customer_id, package_id, season_id, booking_date, travel_start_date, num_people, status) VALUES
+(1, 1, 1, '2024-05-01', '2024-05-10', 2, 'Confirmed'),     -- Goa
+(2, 2, 2, '2024-12-05', '2024-12-15', 1, 'Confirmed'),     -- Manali
+(3, 3, 3, '2024-07-15', '2024-07-20', 4, 'Cancelled'),     -- Jaipur
+(4, 4, 4, '2024-09-01', '2024-09-10', 2, 'Confirmed'),     -- Kerala
+(5, 5, 5, '2024-10-10', '2024-10-20', 3, 'Cancelled'),     -- Leh
+(6, 1, 1, '2024-05-05', '2024-05-12', 1, 'Confirmed'),     -- Goa
+(7, 2, 2, '2024-12-10', '2024-12-20', 2, 'Cancelled'),     -- Manali (cancelled)
+(8, 3, 3, '2024-07-10', '2024-07-18', 3, 'Cancelled'),     -- Jaipur
+(9, 4, 4, '2024-09-15', '2024-09-22', 2, 'Confirmed'),     -- Kerala
+(10, 5, 5, '2024-10-20', '2024-10-30', 1, 'Confirmed'),    -- Leh
+(11, 3, 1, '2024-05-08', '2024-05-15', 2, 'Confirmed'),    -- Jaipur
+(12, 1, 2, '2024-12-01', '2024-12-10', 1, 'Confirmed'),    -- Goa
+(13, 1, 4, '2024-03-10', '2024-03-18', 3, 'Confirmed'),    -- Goa
+(14, 2, 2, '2024-12-12', '2024-12-22', 2, 'Confirmed'),    -- Manali
+(15, 4, 1, '2024-05-03', '2024-05-10', 1, 'Confirmed'),    -- Kerala
+(16, 4, 4, '2024-09-20', '2024-09-28', 2, 'Confirmed'),    -- Kerala
+(17, 5, 5, '2024-10-25', '2024-11-03', 1, 'Cancelled'),    -- Leh (cancelled)
+(18, 1, 3, '2024-07-05', '2024-07-12', 2, 'Confirmed'),    -- Goa
+(19, 3, 1, '2024-05-15', '2024-05-22', 2, 'Confirmed'),    -- Jaipur
+(20, 2, 4, '2024-09-25', '2024-10-02', 1, 'Confirmed');    -- Manali
+
+
+-- Feedback (even for cancelled if needed)
+INSERT INTO feedback (booking_id, rating, comment) VALUES
+(1, 5, 'Amazing trip to Goa!'),
+(2, 4, 'Beautiful mountains in Manali.'),
+(3, 2, 'Trip to Jaipur was cancelled due to heat.'),
+(4, 5, 'Kerala was very relaxing.'),
+(5, 1, 'Could not go to Leh, cancelled due to emergency.'),
+(6, 4, 'Goa was fun but a bit crowded.'),
+(7, 5, 'Manali snow was fantastic!'),
+(8, 1, 'Jaipur trip cancelled due to rain.'),
+(9, 5, 'Kerala houseboat stay was unforgettable.'),
+(10, 4, 'Leh trip was adventurous and well planned.'),
+(11, 5, 'Best beach experience ever!'),
+(12, 4, 'Loved the winter vibe in Goa.'),
+(13, 5, 'Spring festival in Goa was amazing!'),
+(14, 2, 'Manali trip cancelled due to illness.'),
+(15, 3, 'Jaipur was full of history and colors.'),
+(16, 4, 'Loved the backwaters in Kerala.'),
+(17, 1, 'Trip to Leh was cancelled, missed the snow.'),
+(18, 4, 'Goa monsoon was refreshing!'),
+(19, 5, 'Goa is our go-to holiday place!'),
+(20, 4, 'Kerala trip was peaceful and scenic.');
